@@ -1,96 +1,146 @@
+var panel = $('#quiz-area');
+
+$(document).on('click', '#start', function(e) {
+  game.start();
+});
+
+$(document).on('click', '#done', function(e) {
+  game.done();
+});
+
 var questions = [
 {
     question: 'Who is the most electrifying man in sports entertainment?',
-    choices: ['The Brooklyn Brawler', 'Bret Hart', 'The Rock', 'Jake Roberts', 'Randy Savage'],
-    answer: 'The Rock'
+    answers: ['The Brooklyn Brawler', 'Bret Hart', 'The Rock', 'Jake Roberts', 'Randy Savage'],
+    correctAnswer: 'The Rock'
 },
 
 {
     question: "Who is the stylin', profilin', limousine riding, jet flying, kiss-stealing, wheelin' n' dealin' son of a gun?",
-    choices: ['Ric Flair', 'Jerry Lawler', 'Mankind', 'Gorgeous George', 'Edge'],
-    answer: 'Ric Flair'
+    answers: ['Ric Flair', 'Jerry Lawler', 'Mankind', 'Gorgeous George', 'Edge'],
+    correctAnswer: 'Ric Flair'
 },
 
 {
     question: "This man was the first WWF Champion.",
-    choices: ['Bruno Sammartino', 'Hulk Hogan', 'Pedro Morales', 'Buddy Rogers', 'Lou Thesz'],
-    answer: 'Buddy Rogers'
+    answers: ['Bruno Sammartino', 'Hulk Hogan', 'Pedro Morales', 'Buddy Rogers', 'Lou Thesz'],
+    correctAnswer: 'Buddy Rogers'
 },
 
 {
     question: "Which wrestler has the most combined days as NWA champion?",
-    choices: ['Ric Flair', 'Lou Thesz', 'Harley Race', 'Terry Funk', 'Kerry Von Erich'],
-    answer:'Lou Thesz'
+    answers: ['Ric Flair', 'Lou Thesz', 'Harley Race', 'Terry Funk', 'Kerry Von Erich'],
+    correctAnswer:'Lou Thesz'
 },
 
 {
     question: "Who was the masked wrestler known as The Midnight Rider?",
-    choices: ['Hulk Hogan', 'Jerry Lawler', 'Sting', 'Dusty Rhodes', 'Harley Race'],
-    answer: 'Dusty Rhodes'
+    answers: ['Hulk Hogan', 'Jerry Lawler', 'Sting', 'Dusty Rhodes', 'Harley Race'],
+    correctAnswer: 'Dusty Rhodes'
 }
 ];
 
+var game = {
+  correct:0,
+  incorrect:0,
+  counter:120,
+  countdown: function(){
+    game.counter--;
+    $('#counter-number').html(game.counter);
 
-$(document).ready(function() {
-    var counter = 60;
+    if (game.counter === 0){
+      console.log('TIME UP');
+      game.done();
+    }
+  },
+  start: function() {
+    timer = setInterval(game.countdown, 1000);
 
-        $("#startButton").on("click", function() {
-            var self = this;
-
-            var intervalId = setInterval(function(){
-
-                counter--;
-
-                $(self).html('Time Remaining: ' + counter);
-
-                if (counter === 0) {
-                    $('#message').html("Time's up");
-                    clearInterval(intervalId);
-                }
-
-            }, 1000);
-
-        });
-
-        $("#triviaQuestion1").html(questions[0].question);
-        $("#triviaQuestion2").html(questions[1].question);
-        $("#triviaQuestion3").html(questions[2].question);
-        $("#triviaQuestion4").html(questions[3].question);
-        $("#triviaQuestion5").html(questions[4].question);
-
-        $('#q1Choice1').html(questions[0].choices[0]);
-        $('#q1Choice2').html(questions[0].choices[1]);
-        $('#q1Choice3').html(questions[0].choices[2]);
-        $('#q1Choice4').html(questions[0].choices[3]);
-        $('#q1Choice5').html(questions[0].choices[4]);
-
-        $('#q2Choice1').html(questions[1].choices[0]);
-        $('#q2Choice2').html(questions[1].choices[1]);
-        $('#q2Choice3').html(questions[1].choices[2]);
-        $('#q2Choice4').html(questions[1].choices[3]);
-        $('#q2Choice5').html(questions[1].choices[4]);
-
-        $('#q3Choice1').html(questions[2].choices[0]);
-        $('#q3Choice2').html(questions[2].choices[1]);
-        $('#q3Choice3').html(questions[2].choices[2]);
-        $('#q3Choice4').html(questions[2].choices[3]);
-        $('#q3Choice5').html(questions[2].choices[4]);
-
-        $('#q4Choice1').html(questions[3].choices[0]);
-        $('#q4Choice2').html(questions[3].choices[1]);
-        $('#q4Choice3').html(questions[3].choices[2]);
-        $('#q4Choice4').html(questions[3].choices[3]);
-        $('#q4Choice5').html(questions[3].choices[4]);
-
-        $('#q5Choice1').html(questions[4].choices[0]);
-        $('#q5Choice2').html(questions[4].choices[1]);
-        $('#q5Choice3').html(questions[4].choices[2]);
-        $('#q5Choice4').html(questions[4].choices[3]);
-        $('#q5Choice5').html(questions[4].choices[4]);
+    $('#subwrapper').prepend('<h2>Time Remaining: <span id="counter-number">120</span> Seconds</h2>');
+    $('#start').remove();
 
 
-     
+    for (var i = 0; i < questions.length; i++) {
+      panel.append('<h2>' + questions[i].question + '</h2>');
+      for (var j = 0; j < questions[i].answers.length; j++) {
+        panel.append('<input type="radio" name="question' + '-' + i + '" value="' + questions[i].answers[j] + '">' + questions[i].answers[j]);
+      }
+    }
 
-});
+    panel.append('<button id="done">Done</button>');
+  },
+  done: function() {
 
- 
+
+    $.each($("input[name='question-0']:checked"), function() {
+      if ($(this).val() == questions[0].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-1']:checked"), function() {
+        if ($(this).val() == questions[1].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-2']:checked"), function() {
+      if ($(this).val() == questions[2].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-3']:checked"), function() {
+      if ($(this).val() == questions[3].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-4']:checked"), function() {
+      if ($(this).val() == questions[4].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-5']:checked"), function() {
+      if ($(this).val() == questions[5].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-6']:checked"), function() {
+      if ($(this).val() == questions[6].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+    $.each($("input[name='question-7']:checked"), function() {
+      if ($(this).val() == questions[7].correctAnswer) {
+        game.correct++;
+      } else {
+        game.incorrect++;
+      }
+    });
+
+    this.result();
+  },
+    result: function() {
+
+    clearInterval(timer);
+
+    $('#subwrapper h2').remove();
+    panel.html('<h2>All Done!</h2>');
+    panel.append('<h3>Correct Answers: ' + this.correct + '</h3>');
+    panel.append('<h3>Incorrect Answers: ' + this.incorrect + '</h3>');
+    panel.append('<h3>Unanswered: ' + (questions.length - (this.incorrect + this.correct)) + '</h3>');
+  }
+
+};
+
